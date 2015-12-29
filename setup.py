@@ -3,7 +3,7 @@ from setuptools import setup
 
 setup(
     name="testil",
-    version="1.0",
+    version="1.1",
     author="Daniel Miller",
     author_email="millerdev@gmail.com",
     description=__doc__,

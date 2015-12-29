@@ -5,9 +5,11 @@ import logging
 import os
 import re
 import shutil
+import sys
 import tempfile
 from collections import defaultdict
 from contextlib import contextmanager
+from traceback import format_exception
 
 try:
     basestring
@@ -173,6 +175,7 @@ def replattr(*args, **kw):
             rtype = 'key' if dict_replace else 'attribute'
             log.error("cannot replace %s: %s", rtype, attr, exc_info=True)
             errors.append(str(ex))
+    assert not errors, "\n".join(errors)
     try:
         yield
     finally:
@@ -284,8 +287,10 @@ class CaptureLogging(object):
             assert not kw, "unrecognized keyword args: %s" % (kw,)
             if args:
                 message = message % args
+            if exc_info == True or name == "exception":
+                exc_info = sys.exc_info()
             if exc_info is not None:
-                message += "\nexc_info = %r" % (exc_info,)
+                message += "\n" + "".join(format_exception(*exc_info))
             self.data[name].append(message)
         log.__name__ = name
         return log
